@@ -14,31 +14,40 @@ output:
 # SALES ANALYSIS-Intro to the tidyverse
 
 Last compiled: `r Sys.Date()`
-
 The solution code is given below:
-```{r,include=FALSE}
-###Step 1: Load libraries ----
+### Step 1: Load libraries ----
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
 library(tidyverse)
 library(readxl)
 library(lubridate)
 library(ggplot2)
-###Step 2: Importing Files ----
+```
+
+### Step 2: Importing Files ----
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
 bikes_tbl <- read_excel(path ="C:/datascience/DS_101/00_data/01_bike_sales/01_raw_data/bikes.xlsx")
 orderlines_tbl <- read_excel("C:/datascience/DS_101/00_data/01_bike_sales/01_raw_data/orderlines.xlsx")
 bikeshops_tbl  <- read_excel("C:/datascience/DS_101/00_data/01_bike_sales/01_raw_data/bikeshops.xlsx")
+```
 
-###Step 3: Examining Data ----
+### Step 3: Examining Data ----
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
 orderlines_tbl
 glimpse(orderlines_tbl)
+```
 
-###Step 4: Joining Data ----
+
+### Step 4: Joining Data ----
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
 left_join(orderlines_tbl, bikes_tbl, by = c("product.id" = "bike.id"))
 bike_orderlines_joined_tbl <- orderlines_tbl %>%
 left_join(bikes_tbl, by = c("product.id" = "bike.id")) %>%
 left_join(bikeshops_tbl, by = c("customer.id" = "bikeshop.id"))
 bike_orderlines_joined_tbl %>% glimpse()
+```
 
-###Step 5: Wrangling Data ----
+### Step 5: Wrangling Data ----
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
 bike_orderlines_wrangled_tbl <- bike_orderlines_joined_tbl %>%
 separate(col    = location,
            into   = c("City","State"),
@@ -53,10 +62,12 @@ select(order.id, contains("order"), contains("model"), contains("State"),
          everything()) %>%
 rename(bikeshop = name) %>%
 set_names(names(.) %>% str_replace_all("\\.", "_"))
-  
+```
+
 ### Step 6: Business Insights ----
 #### 6.1 Sales by Location ----
 ##### Step 1 - Manipulate
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
 sales_by_location_tbl <- bike_orderlines_wrangled_tbl %>%
   select(State, total_price) %>%
   group_by(State) %>% 
@@ -66,10 +77,9 @@ sales_by_location_tbl <- bike_orderlines_wrangled_tbl %>%
                                      prefix = "", 
                                      suffix = " €"))
 sales_by_location_tbl
-
 ```
 ##### Step 2 - Visualize
-```{r, include=TRUE}
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
 sales_by_location_tbl
   ggplot(sales_by_location_tbl,aes(x = State, y = sales))+ 
   geom_col(fill = "#2DC6D6")+  # Use geom_col for a bar plot
@@ -86,11 +96,9 @@ sales_by_location_tbl
   )
 ```
 
-    
-```{r, include=FALSE}
-
 #### 6.2 Sales by Year and Category 2 ----
 ##### Step 1 - Manipulate
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
   sales_by_year_state_tbl <- bike_orderlines_wrangled_tbl %>%
    select(order_date, total_price, State) %>%
    mutate(year = year(order_date)) %>%
@@ -103,8 +111,9 @@ sales_by_location_tbl
                                        suffix = " €"))
   sales_by_year_state_tbl
 ```
+
 ##### Step 2 - Visualize
-```{r, include=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
     sales_by_year_state_tbl %>%
     ggplot(sales_by_year_state_tbl,mapping=aes(year,sales, fill=State)) +
     geom_col() +
