@@ -195,8 +195,8 @@ COLLECT PRODUCT FAMILIES ---- There was a issue with ,(thousand) and .(decimal) 
 
 
   
-#TASK 3 - DATA WRANGLING
-
+# TASK 3 - DATA WRANGLING
+I have faced many problems with this task. Here is my code.
 
 ```{r message=FALSE, warning=FALSE, paged.print=FALSE}
 library(tidyverse)
@@ -260,7 +260,7 @@ Loading patent table
 #I couldn't check if the code works.It was running for a long time.Sorry my laptop has some issues.
 ```
 
-##Question 3
+## Question 3
 Reading table
 ```{r message=FALSE, warning=FALSE, paged.print=FALSE}
 
@@ -283,4 +283,25 @@ Joining table
   #count(organization,sort = TRUE ) %>%
   #count(mainclass_id,sort =TRUE)
 ```
-  
+
+# TASK 4 - VISUALISATION
+I had issues in read_csv. So i couldn't go furthur.
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+#library(tidyverse)
+#library(ggplot2)
+#covid_data_tbl <- read_csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv")
+#covid_data_tbl_4 <- covid_data_tbl 
+#  distinct(cases, dateRep, countriesAndTerritories) %>% 
+ # filter(countriesAndTerritories == 'Germany' | 
+  #         countriesAndTerritories == 'United_Kingdom' | 
+   #        countriesAndTerritories == 'Spain' | 
+    #       countriesAndTerritories == 'France' | 
+     #      countriesAndTerritories == 'United_States_of_America')%>%
+ # mutate(date       = lubridate::dmy(dateRep)) %>% 
+  #mutate(cumsum = cumsum(cases))
+#ggplot(aes(x = dateRep, y = case_sum)) + geom_line()
+
+#labs(title ="Corona cases-World",
+ #    x = "year 2020",
+#     y = "cumulative cases")
+#Question 2
