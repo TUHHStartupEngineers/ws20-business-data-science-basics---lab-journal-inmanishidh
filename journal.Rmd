@@ -135,8 +135,62 @@ sales_by_location_tbl
 
 
 
-# My second post (note the order)
+# TASK 2: Data Aquisition
+## Part1
+To get some data via an API
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+library(httr)
+library(jsonlite)
+library(dplyr)
+library(tidyverse)
+library(rvest)
+library(glue)
+```
 
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+# Wrapped into a function
+openlibrary_api_url <- "https://openlibrary.org/dev/docs/api/books"
+openlibrary_api <- function(path) {
+  url <- modify_url(url = "https://openlibrary.org/dev/docs", path = glue("/api{path}"))
+  resp <- GET(url)
+  stop_for_status(resp) 
+}
+resp <- openlibrary_api("/books?bibkeys=ISBN:0451526538")
+resp
+```
+
+
+## Part 2- Scraping
+Model names and prices for at least one category
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+library(tidyverse) 
+library(rvest)     
+library(jsonlite)  
+library(glue)      
+library(stringi)
+```
+COLLECT PRODUCT FAMILIES ----
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+  mtb_tbl <- read_html("https://www.rosebikes.de/fahrr%C3%A4der/mtb") %>%
+  html_nodes("span.catalog-category-bikes__title-text") %>%
+  html_text() %>%
+  str_replace_all("\n"," ")
+  mtb_tbl
+  #as_tibble(mtb_tbl)
+  
+  mtb_price_tbl <- read_html("https://www.rosebikes.de/fahrr%C3%A4der/mtb") %>%
+    html_nodes("div.catalog-category-bikes__price-title") %>%
+    html_text() %>%
+    str_replace_all("\n"," ")%>%
+    
+     readr::parse_number()
+  mtb_price_tbl
+  tibble(mtb_tbl,mtb_price_tbl)
+```
+  
+  
+  
+  
 Last compiled: `r Sys.Date()`
 
 I'm writing this tutorial going from the top down. And, this is how it will be printed. So, notice the second post is second in the list. If you want your most recent post to be at the top, then make a new post starting at the top. If you want the oldest first, do, then keep adding to the bottom

@@ -628,10 +628,75 @@ sales_by_location_tbl</code></pre>
 </div>
 </div>
 </div>
-<div id="my-second-post-note-the-order" class="section level1">
-<h1><span class="header-section-number">2</span> My second post (note the order)</h1>
+<div id="task-2-data-aquisition" class="section level1">
+<h1><span class="header-section-number">2</span> TASK 2: Data Aquisition</h1>
+<div id="part1" class="section level2">
+<h2><span class="header-section-number">2.1</span> Part1</h2>
+<p>To get some data via an API</p>
+<pre class="r"><code>library(httr)
+library(jsonlite)
+library(dplyr)
+library(tidyverse)
+library(rvest)
+library(glue)</code></pre>
+<pre class="r"><code># Wrapped into a function
+openlibrary_api_url &lt;- &quot;https://openlibrary.org/dev/docs/api/books&quot;
+openlibrary_api &lt;- function(path) {
+  url &lt;- modify_url(url = &quot;https://openlibrary.org/dev/docs&quot;, path = glue(&quot;/api{path}&quot;))
+  resp &lt;- GET(url)
+  stop_for_status(resp) 
+}
+resp &lt;- openlibrary_api(&quot;/books?bibkeys=ISBN:0451526538&quot;)
+resp</code></pre>
+<pre><code>## Response [https://openlibrary.org/api/books?bibkeys=ISBN:0451526538]
+##   Date: 2020-12-05 14:35
+##   Status: 200
+##   Content-Type: application/json
+##   Size: 333 B</code></pre>
+</div>
+<div id="part-2--scraping" class="section level2">
+<h2><span class="header-section-number">2.2</span> Part 2- Scraping</h2>
+<p>Model names and prices for at least one category</p>
+<pre class="r"><code>library(tidyverse) 
+library(rvest)     
+library(jsonlite)  
+library(glue)      
+library(stringi)</code></pre>
+<p>COLLECT PRODUCT FAMILIES —-</p>
+<pre class="r"><code>  mtb_tbl &lt;- read_html(&quot;https://www.rosebikes.de/fahrr%C3%A4der/mtb&quot;) %&gt;%
+  html_nodes(&quot;span.catalog-category-bikes__title-text&quot;) %&gt;%
+  html_text() %&gt;%
+  str_replace_all(&quot;\n&quot;,&quot; &quot;)
+  mtb_tbl</code></pre>
+<pre><code>## [1] &quot; GROUND CONTROL &quot;    &quot; ROOT MILLER &quot;       &quot; PIKES PEAK &quot;       
+## [4] &quot; THE BRUCE &quot;         &quot; COUNT SOLO &quot;        &quot; PSYCHO PATH &quot;      
+## [7] &quot; THRILL HILL &quot;       &quot; THRILL HILL TRAIL &quot; &quot; SOUL FIRE &quot;</code></pre>
+<pre class="r"><code>  #as_tibble(mtb_tbl)
+  
+  mtb_price_tbl &lt;- read_html(&quot;https://www.rosebikes.de/fahrr%C3%A4der/mtb&quot;) %&gt;%
+    html_nodes(&quot;div.catalog-category-bikes__price-title&quot;) %&gt;%
+    html_text() %&gt;%
+    str_replace_all(&quot;\n&quot;,&quot; &quot;)%&gt;%
+    
+     readr::parse_number()
+  mtb_price_tbl</code></pre>
+<pre><code>## [1] 1.699 1.999 3.099    NA    NA 1.849 2.599 2.899 2.149</code></pre>
+<pre class="r"><code>  tibble(mtb_tbl,mtb_price_tbl)</code></pre>
+<pre><code>## # A tibble: 9 x 2
+##   mtb_tbl               mtb_price_tbl
+##   &lt;chr&gt;                         &lt;dbl&gt;
+## 1 &quot; GROUND CONTROL &quot;             1.70
+## 2 &quot; ROOT MILLER &quot;                2.00
+## 3 &quot; PIKES PEAK &quot;                 3.10
+## 4 &quot; THE BRUCE &quot;                 NA   
+## 5 &quot; COUNT SOLO &quot;                NA   
+## 6 &quot; PSYCHO PATH &quot;                1.85
+## 7 &quot; THRILL HILL &quot;                2.60
+## 8 &quot; THRILL HILL TRAIL &quot;          2.90
+## 9 &quot; SOUL FIRE &quot;                  2.15</code></pre>
 <p>Last compiled: 2020-12-05</p>
 <p>I’m writing this tutorial going from the top down. And, this is how it will be printed. So, notice the second post is second in the list. If you want your most recent post to be at the top, then make a new post starting at the top. If you want the oldest first, do, then keep adding to the bottom</p>
+</div>
 </div>
 <div id="adding-r-stuff" class="section level1">
 <h1><span class="header-section-number">3</span> Adding R stuff</h1>
@@ -639,7 +704,7 @@ sales_by_location_tbl</code></pre>
 <p>So, let’s say you are learning how to make a histogram in R. For example, maybe you want to sample 100 numbers from a normal distribution with mean = 0, and standard deviation = 1, and then you want to plot a histogram. You can do this right here by using an r code block, like this:</p>
 <pre class="r"><code>samples &lt;- rnorm(100, mean=0, sd=1)
 hist(samples)</code></pre>
-<p><img src="journal_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="journal_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>When you knit this R Markdown document, you will see that the histogram is printed to the page, along with the R code. This document can be set up to hide the R code in the webpage, just delete the comment (hashtag) from the cold folding option in the yaml header up top. For purposes of letting yourself see the code, and me see the code, best to keep it the way that it is. You’ll learn that all of these things and more can be customized in each R code block.</p>
 </div>
 
