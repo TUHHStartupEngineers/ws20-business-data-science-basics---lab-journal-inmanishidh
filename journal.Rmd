@@ -157,6 +157,7 @@ openlibrary_api <- function(path) {
 }
 resp <- openlibrary_api("/books?bibkeys=ISBN:0451526538")
 resp
+rawToChar(resp$content)
 ```
 
 
@@ -169,7 +170,7 @@ library(jsonlite)
 library(glue)      
 library(stringi)
 ```
-COLLECT PRODUCT FAMILIES ----
+COLLECT PRODUCT FAMILIES ---- There was a issue with ,(thousand) and .(decimal) seperations for numbers. So the results were seen as small numbers.
 ```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
   mtb_tbl <- read_html("https://www.rosebikes.de/fahrr%C3%A4der/mtb") %>%
   html_nodes("span.catalog-category-bikes__title-text") %>%
@@ -187,23 +188,99 @@ COLLECT PRODUCT FAMILIES ----
   mtb_price_tbl
   tibble(mtb_tbl,mtb_price_tbl)
 ```
+
+
+
+
+
+
   
-  
-  
-  
-Last compiled: `r Sys.Date()`
+#TASK 3 - DATA WRANGLING
 
-I'm writing this tutorial going from the top down. And, this is how it will be printed. So, notice the second post is second in the list. If you want your most recent post to be at the top, then make a new post starting at the top. If you want the oldest first, do, then keep adding to the bottom
 
-# Adding R stuff
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+library(tidyverse)
+library(readr)
+```
+## Question 1
 
-So far this is just a blog where you can write in plain text and serve your writing to a webpage. One of the main purposes of this lab journal is to record your progress learning R. The reason I am asking you to use this process is because you can both make a website, and a lab journal, and learn R all in R-studio. This makes everything really convenient and in the same place. 
+Reading tables
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+#asignee_tbl <- read.delim(
+#  file = "assignee.tsv", 
+#  sep = "\t",
+#)
 
-So, let's say you are learning how to make a histogram in R. For example, maybe you want to sample 100 numbers from a normal distribution with mean = 0, and standard deviation = 1, and then you want to plot a histogram. You can do this right here by using an r code block, like this:
 
-```{r}
-samples <- rnorm(100, mean=0, sd=1)
-hist(samples)
+#patent_asignee_tbl <- read.delim(
+ # file = "patent_assignee.tsv", 
+#  sep = "\t", 
+ # na = c("", "NA", "NULL")
+#)
 ```
 
-When you knit this R Markdown document, you will see that the histogram is printed to the page, along with the R code. This document can be set up to hide the R code in the webpage, just delete the comment (hashtag) from the cold folding option in the yaml header up top. For purposes of letting yourself see the code, and me see the code, best to keep it the way that it is. You'll learn that all of these things and more can be customized in each R code block.
+
+Joining table with assignee id
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+#asignee_patent_asignee_joined_tbl <- asignee_tbl%>% 
+ # left_join( patent_asignee_tbl, by = c( "id"="assignee_id"))
+#asignee_patent_asignee_joined_tbl
+# arranging ascending order
+#asignee_patent_asignee_joined_tbl %>% 
+#  filter(type == 2) %>%
+#  group_by(organization) %>%
+#  filter(!is.na(organization)) %>%
+#  filter(!is.na(patent_id)) %>%
+#  count(organization,sort =TRUE)
+# slice(1:10).I tried slice to get 10 rows but it didn't work. Also I had problem with read and write rds
+```
+
+## Question 2
+Loading patent table
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+#patent_tbl <- read.delim(
+ #   file = "patent.tsv", 
+#   na = c("", "NA", "NULL")
+ # )
+
+# Joining table
+#patent_asignee_patent_asignee_joined_tbl <- #asignee_patent_asignee_joined_tbl%>% 
+ # left_join( patent_tbl, by = c( "patent_id"="number"))
+#asignee_patent_asignee_joined_tbl
+
+
+#patent_asignee_patent_asignee_joined_tbl%>%
+ # filter(type == 2)%>%
+  #mutate(year = year(date)) %>%
+  #filter(year == 2019) %>%
+  #group_by(organization) %>%
+  #filter(!is.na(organization)) %>%
+  #filter(!is.na(patent_id)) %>%
+  #count(organization,sort =TRUE)
+#I couldn't check if the code works.It was running for a long time.Sorry my laptop has some issues.
+```
+
+##Question 3
+Reading table
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+
+#   file = "uspc.tsv", 
+ #   sep = "\t", 
+  #  na = c("", "NA", "NULL"),
+    #cols_only(patent_id, mainclass_id)
+  #)
+```
+Joining table
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+#uspc_patent_asignee_patent_asignee_joined_tbl <- #patent_asignee_patent_asignee_joined_tbl%>% 
+ # left_join( uspc_tbl, by = c( "patent_id"="number"))
+#asignee_patent_asignee_joined_tbl
+
+#uspc_patent_asignee_patent_asignee_joined_tbl <-        
+ # group_by(organization) %>%
+  #filter(!is.na(organization)) %>%
+  #filter(!is.na(patent_id)) %>%
+  #count(organization,sort = TRUE ) %>%
+  #count(mainclass_id,sort =TRUE)
+```
+  

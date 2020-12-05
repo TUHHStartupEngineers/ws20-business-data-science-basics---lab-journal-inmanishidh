@@ -649,10 +649,12 @@ openlibrary_api &lt;- function(path) {
 resp &lt;- openlibrary_api(&quot;/books?bibkeys=ISBN:0451526538&quot;)
 resp</code></pre>
 <pre><code>## Response [https://openlibrary.org/api/books?bibkeys=ISBN:0451526538]
-##   Date: 2020-12-05 14:35
+##   Date: 2020-12-05 21:43
 ##   Status: 200
 ##   Content-Type: application/json
 ##   Size: 333 B</code></pre>
+<pre class="r"><code>rawToChar(resp$content)</code></pre>
+<pre><code>## [1] &quot;var _OLBookInfo = {\&quot;ISBN:0451526538\&quot;: {\&quot;bib_key\&quot;: \&quot;ISBN:0451526538\&quot;, \&quot;info_url\&quot;: \&quot;https://openlibrary.org/books/OL1017798M/The_adventures_of_Tom_Sawyer\&quot;, \&quot;preview\&quot;: \&quot;noview\&quot;, \&quot;preview_url\&quot;: \&quot;https://openlibrary.org/books/OL1017798M/The_adventures_of_Tom_Sawyer\&quot;, \&quot;thumbnail_url\&quot;: \&quot;https://covers.openlibrary.org/b/id/295577-S.jpg\&quot;}};&quot;</code></pre>
 </div>
 <div id="part-2--scraping" class="section level2">
 <h2><span class="header-section-number">2.2</span> Part 2- Scraping</h2>
@@ -662,7 +664,7 @@ library(rvest)
 library(jsonlite)  
 library(glue)      
 library(stringi)</code></pre>
-<p>COLLECT PRODUCT FAMILIES —-</p>
+<p>COLLECT PRODUCT FAMILIES —- There was a issue with ,(thousand) and .(decimal) seperations for numbers. So the results were seen as small numbers.</p>
 <pre class="r"><code>  mtb_tbl &lt;- read_html(&quot;https://www.rosebikes.de/fahrr%C3%A4der/mtb&quot;) %&gt;%
   html_nodes(&quot;span.catalog-category-bikes__title-text&quot;) %&gt;%
   html_text() %&gt;%
@@ -694,18 +696,78 @@ library(stringi)</code></pre>
 ## 7 &quot; THRILL HILL &quot;                2.60
 ## 8 &quot; THRILL HILL TRAIL &quot;          2.90
 ## 9 &quot; SOUL FIRE &quot;                  2.15</code></pre>
-<p>Last compiled: 2020-12-05</p>
-<p>I’m writing this tutorial going from the top down. And, this is how it will be printed. So, notice the second post is second in the list. If you want your most recent post to be at the top, then make a new post starting at the top. If you want the oldest first, do, then keep adding to the bottom</p>
+<p>#TASK 3 - DATA WRANGLING</p>
+<pre class="r"><code>library(tidyverse)
+library(readr)</code></pre>
 </div>
+<div id="question-1" class="section level2">
+<h2><span class="header-section-number">2.3</span> Question 1</h2>
+<p>Reading tables</p>
+<pre class="r"><code>#asignee_tbl &lt;- read.delim(
+#  file = &quot;assignee.tsv&quot;, 
+#  sep = &quot;\t&quot;,
+#)
+
+
+#patent_asignee_tbl &lt;- read.delim(
+ # file = &quot;patent_assignee.tsv&quot;, 
+#  sep = &quot;\t&quot;, 
+ # na = c(&quot;&quot;, &quot;NA&quot;, &quot;NULL&quot;)
+#)</code></pre>
+<p>Joining table with assignee id</p>
+<pre class="r"><code>#asignee_patent_asignee_joined_tbl &lt;- asignee_tbl%&gt;% 
+ # left_join( patent_asignee_tbl, by = c( &quot;id&quot;=&quot;assignee_id&quot;))
+#asignee_patent_asignee_joined_tbl
+# arranging ascending order
+#asignee_patent_asignee_joined_tbl %&gt;% 
+#  filter(type == 2) %&gt;%
+#  group_by(organization) %&gt;%
+#  filter(!is.na(organization)) %&gt;%
+#  filter(!is.na(patent_id)) %&gt;%
+#  count(organization,sort =TRUE)
+# slice(1:10).I tried slice to get 10 rows but it didn&#39;t work. Also I had problem with read and write rds</code></pre>
 </div>
-<div id="adding-r-stuff" class="section level1">
-<h1><span class="header-section-number">3</span> Adding R stuff</h1>
-<p>So far this is just a blog where you can write in plain text and serve your writing to a webpage. One of the main purposes of this lab journal is to record your progress learning R. The reason I am asking you to use this process is because you can both make a website, and a lab journal, and learn R all in R-studio. This makes everything really convenient and in the same place.</p>
-<p>So, let’s say you are learning how to make a histogram in R. For example, maybe you want to sample 100 numbers from a normal distribution with mean = 0, and standard deviation = 1, and then you want to plot a histogram. You can do this right here by using an r code block, like this:</p>
-<pre class="r"><code>samples &lt;- rnorm(100, mean=0, sd=1)
-hist(samples)</code></pre>
-<p><img src="journal_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
-<p>When you knit this R Markdown document, you will see that the histogram is printed to the page, along with the R code. This document can be set up to hide the R code in the webpage, just delete the comment (hashtag) from the cold folding option in the yaml header up top. For purposes of letting yourself see the code, and me see the code, best to keep it the way that it is. You’ll learn that all of these things and more can be customized in each R code block.</p>
+<div id="question-2" class="section level2">
+<h2><span class="header-section-number">2.4</span> Question 2</h2>
+<p>Loading patent table</p>
+<pre class="r"><code>#patent_tbl &lt;- read.delim(
+ #   file = &quot;patent.tsv&quot;, 
+#   na = c(&quot;&quot;, &quot;NA&quot;, &quot;NULL&quot;)
+ # )
+
+# Joining table
+#patent_asignee_patent_asignee_joined_tbl &lt;- #asignee_patent_asignee_joined_tbl%&gt;% 
+ # left_join( patent_tbl, by = c( &quot;patent_id&quot;=&quot;number&quot;))
+#asignee_patent_asignee_joined_tbl
+
+
+#patent_asignee_patent_asignee_joined_tbl%&gt;%
+ # filter(type == 2)%&gt;%
+  #mutate(year = year(date)) %&gt;%
+  #filter(year == 2019) %&gt;%
+  #group_by(organization) %&gt;%
+  #filter(!is.na(organization)) %&gt;%
+  #filter(!is.na(patent_id)) %&gt;%
+  #count(organization,sort =TRUE)
+#I couldn&#39;t check if the code works.It was running for a long time.Sorry my laptop has some issues.</code></pre>
+<p>##Question 3 Reading table</p>
+<pre class="r"><code>#   file = &quot;uspc.tsv&quot;, 
+ #   sep = &quot;\t&quot;, 
+  #  na = c(&quot;&quot;, &quot;NA&quot;, &quot;NULL&quot;),
+    #cols_only(patent_id, mainclass_id)
+  #)</code></pre>
+<p>Joining table</p>
+<pre class="r"><code>#uspc_patent_asignee_patent_asignee_joined_tbl &lt;- #patent_asignee_patent_asignee_joined_tbl%&gt;% 
+ # left_join( uspc_tbl, by = c( &quot;patent_id&quot;=&quot;number&quot;))
+#asignee_patent_asignee_joined_tbl
+
+#uspc_patent_asignee_patent_asignee_joined_tbl &lt;-        
+ # group_by(organization) %&gt;%
+  #filter(!is.na(organization)) %&gt;%
+  #filter(!is.na(patent_id)) %&gt;%
+  #count(organization,sort = TRUE ) %&gt;%
+  #count(mainclass_id,sort =TRUE)</code></pre>
+</div>
 </div>
 
 
